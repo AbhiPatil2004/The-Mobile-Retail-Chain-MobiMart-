@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MobiMart Executive Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">MobiMart Inventory Intelligence</h2>
+            <p class="text-muted">Central Allocation & Working Capital Guard</p>
+        </div>
+        <a href="?run_allocation=1&week={{ current_week }}" class="btn btn-primary">Run Week {{ current_week }} Allocation</a>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm border-0">
+                <div class="text-muted small">Capital Allocated</div>
+                <h3 class="fw-bold text-success">₹{{ total_capital|floatformat:2 }}</h3>
+                <span class="badge bg-secondary w-50">Cap: ₹4.00 Cr</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm border-0">
+                <div class="text-muted small">Remaining Capital Buffer</div>
+                <h3 class="fw-bold text-primary">₹{{ remaining_budget|floatformat:2 }}</h3>
+                <span class="badge bg-light text-dark border w-50">Unallocated</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm border-0">
+                <div class="text-muted small">EOL / At-Risk Models</div>
+                <h3 class="fw-bold text-danger">{{ at_risk_count }}</h3>
+                <span class="badge bg-danger w-50">Needs Action</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendations Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">Allocation Recommendations (Monday Run)</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Store</th>
+                        <th>Phone Model</th>
+                        <th>Units</th>
+                        <th>Capital (₹)</th>
+                        <th>Rupee Justification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alloc in allocations %}
+                    <tr>
+                        <td><strong>{{ alloc.store.name }}</strong> <br><small class="text-muted">{{ alloc.store.city }}</small></td>
+                        <td>{{ alloc.phone.name }} <br><span class="badge bg-info text-dark">{{ alloc.phone.category }}</span></td>
+                        <td>{{ alloc.allocated_units }}</td>
+                        <td>₹{{ alloc.capital_allocated|floatformat:2 }}</td>
+                        <td><small class="text-muted">{{ alloc.reasoning_rupees }}</small></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No allocations generated for this week. Click "Run Allocation" above.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
